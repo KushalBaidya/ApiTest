@@ -2,7 +2,10 @@ package com.example.demo1.controller;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
+import com.example.demo1.model.LCourseContent;
+import com.example.demo1.model.LCourseDesc;
 import com.example.demo1.model.Ldemo;
 import com.example.demo1.repository.LdemoRepository;
 
@@ -67,9 +70,16 @@ public class LdemoController {
     @PostMapping("/course")
     public ResponseEntity<Ldemo> createCourse(@RequestBody Ldemo course){
         try{
-            Ldemo _course = ldemoRepository.save(new Ldemo(course.getName(), course.getCompetency(), course.getTime(), course.getStatus()));
+        	LCourseDesc lcoursedesc=course.getCourseDesc();
+        	lcoursedesc.setLdemo(course);
+        	Set<LCourseContent> lcoursecontent=lcoursedesc.getCourse();
+        	for(LCourseContent e:lcoursecontent) {
+        		e.setCoursedesc(lcoursedesc);
+        	}
+            Ldemo _course = ldemoRepository.save(course);
             return new ResponseEntity<>(_course, HttpStatus.CREATED);
         } catch(Exception e){
+        	e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -79,11 +89,13 @@ public class LdemoController {
         Optional<Ldemo> courseData = ldemoRepository.findById(id);
         if (courseData.isPresent()) {
             Ldemo _course = courseData.get();
-            _course.setName(course.getName());
+            _course.setCourseName(course.getCourseName());
+            _course.setCourseDesc(course.getCourseDesc());
             _course.setCompetency(course.getCompetency());
             _course.setTime(course.getTime());
             _course.setStatus(course.getStatus());
-            return new ResponseEntity<>(ldemoRepository.save(_course), HttpStatus.OK);
+            final Ldemo updatedUser = ldemoRepository.save(_course);
+            return new ResponseEntity<>(updatedUser, HttpStatus.OK);
         } 
         else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -100,7 +112,7 @@ public class LdemoController {
         }
     }
     
-    @DeleteMapping("course")
+    @DeleteMapping("/course")
     public ResponseEntity<HttpStatus> deleteAllCourses(){
         try{
             ldemoRepository.deleteAll();
