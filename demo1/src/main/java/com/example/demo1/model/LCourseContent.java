@@ -23,6 +23,10 @@ public class LCourseContent {
 	
 	
 	
+	public void setCid(long cid) {
+		this.cid = cid;
+	}
+
 	@Column(name = "content_name")
 	private String contentName;
 	

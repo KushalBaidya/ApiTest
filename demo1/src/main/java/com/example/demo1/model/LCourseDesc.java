@@ -1,5 +1,6 @@
 package com.example.demo1.model;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -28,9 +29,13 @@ public class LCourseDesc {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 	
+	public void setId(long id) {
+		this.id = id;
+	}
+
 	@JsonManagedReference
 	@OneToMany(fetch = FetchType.EAGER,mappedBy="coursedesc",cascade = CascadeType.ALL)
-    private Set<LCourseContent> course=new HashSet();    
+    private List<LCourseContent> course;   
 
 	@Column(name = "completion_point")
     private String completionPoint;
@@ -60,24 +65,29 @@ public class LCourseDesc {
 	}
 	
 
-	public LCourseDesc(Set<LCourseContent> course, String completionPoint, float rating,Ldemo ldemo) {
+	public LCourseDesc(List<LCourseContent> course, String completionPoint, float rating,Ldemo ldemo) {
 		super();
 		this.course = course;
 		this.completionPoint = completionPoint;
 		this.rating = rating;
 		this.ldemo=ldemo;
 	}
+	
+//	  //bind to this
+//    public List<LCourseContent> getCourseAsList(){
+//        return new ArrayList<LCourseContent>(course);
+//    }
 
 
 	public long getId() {
 		return id;
 	}
 
-	public Set<LCourseContent> getCourse() {
+	public List<LCourseContent> getCourse() {
 		return course;
 	}
 
-	public void setCourse(Set<LCourseContent> course) {
+	public void setCourse(List<LCourseContent> course) {
 		this.course = course;
 	}
 
