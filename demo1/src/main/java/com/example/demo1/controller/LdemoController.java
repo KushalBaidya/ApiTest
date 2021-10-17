@@ -10,9 +10,12 @@ import com.example.demo1.model.Ldemo;
 import com.example.demo1.model.User;
 import com.example.demo1.repository.LdemoRepository;
 import com.example.demo1.service.SecurityService;
+import com.example.demo1.service.SecurityServiceImpl;
 import com.example.demo1.service.UserService;
 import com.example.demo1.validator.UserValidator;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,10 +35,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
+
 @Controller
 public class LdemoController {
 	@Autowired
 	LdemoRepository ldemoRepository;
+	
+	private static final Logger logger = LoggerFactory.getLogger(SecurityServiceImpl.class);
 
 	public LdemoRepository getLdemoRepository() {
 		return ldemoRepository;
