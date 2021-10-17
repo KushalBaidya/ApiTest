@@ -124,7 +124,7 @@ public class LdemoController {
 		ldemoRepository.findAll().forEach(course::add);
 		model.addAttribute("course", course);
 
-		return "courses";
+		return "welcome";
 	}
 
 	@GetMapping(value="/addCourse")
@@ -149,7 +149,7 @@ public class LdemoController {
 	}
 
 	@PostMapping("/course")
-	public String createCourse(@ModelAttribute("course") Ldemo course){
+	public String createCourse(@ModelAttribute("course") Ldemo course,Model model){
 		Optional<Ldemo> courseData = ldemoRepository.findById(course.getId());
 		if (courseData.isPresent()) {
 			Ldemo _course = courseData.get();
@@ -171,8 +171,11 @@ public class LdemoController {
 			}
 			
 			ldemoRepository.save(_course);
-			return "welcome"
-					;}
+			List<Ldemo> courseNew = new ArrayList<Ldemo>();
+			ldemoRepository.findAll().forEach(courseNew::add);
+			model.addAttribute("course", courseNew);
+
+			return "welcome";}
 		else
 		{
 			LCourseDesc lcoursedesc=course.getCourseDesc();
@@ -182,6 +185,9 @@ public class LdemoController {
 				e.setCoursedesc(lcoursedesc);
 			}
 			ldemoRepository.save(course);
+			List<Ldemo> courseNew = new ArrayList<Ldemo>();
+			ldemoRepository.findAll().forEach(courseNew::add);
+			model.addAttribute("course", courseNew);
 
 			return "welcome";
 		}
@@ -189,7 +195,7 @@ public class LdemoController {
 	}
 
 	@PostMapping("/course/{id}")
-	public String updateCourse(@PathVariable("id") long id , @RequestBody Ldemo course){
+	public String updateCourse(@PathVariable("id") long id , @RequestBody Ldemo course,Model model){
 		Optional<Ldemo> courseData = ldemoRepository.findById(id);
 		if (courseData.isPresent()) {
 			Ldemo _course = courseData.get();
@@ -199,18 +205,27 @@ public class LdemoController {
 			_course.setTime(course.getTime());
 			_course.setStatus(course.getStatus());
 			ldemoRepository.save(_course);
+			List<Ldemo> courseNew = new ArrayList<Ldemo>();
+			ldemoRepository.findAll().forEach(courseNew::add);
+			model.addAttribute("course", courseNew);
 			return "welcome";
 		} 
 		else {
+			List<Ldemo> courseNew = new ArrayList<Ldemo>();
+			ldemoRepository.findAll().forEach(courseNew::add);
+			model.addAttribute("course", courseNew);
 			return "welcome";
 		}
 	}
 
 
 	@GetMapping("/deleteCourse/{id}")
-	public String deleteCourse(@PathVariable("id") long id){
+	public String deleteCourse(@PathVariable("id") long id,Model model){
 		try{
 			ldemoRepository.deleteById(id);
+			List<Ldemo> courseNew = new ArrayList<Ldemo>();
+			ldemoRepository.findAll().forEach(courseNew::add);
+			model.addAttribute("course", courseNew);
 			return "welcome";
 		} catch(Exception e){
 			return "welcome";
@@ -221,6 +236,7 @@ public class LdemoController {
 	public ResponseEntity<HttpStatus> deleteAllCourses(){
 		try{
 			ldemoRepository.deleteAll();
+			
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		} catch(Exception e){
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
